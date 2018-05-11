@@ -1,0 +1,7 @@
+{
+    "contacts":[
+        { "id":1, "name":"Ram", "phoneNumber":"6666666666", "bloodGroup":"A+", "dob":"11-10-1994", "weight":50, "district":"Trivandrum", "address":"kazhakoottam", "lastDonationDate":"10-01-2017"},
+        { "id":1, "name":"Sam", "phoneNumber":"5555555555", "bloodGroup":"A+", "dob":"11-10-1994", "weight":50, "district":"Trivandrum", "address":"kazhakoottam", "lastDonationDate":"10-01-2017"},
+        { "id":1, "name":"Tom", "phoneNumber":"6666666666", "bloodGroup":"A+", "dob":"11-10-1994", "weight":50, "district":"Trivandrum", "address":"kazhakoottam", "lastDonationDate":"10-01-2017"}
+    ]
+}
