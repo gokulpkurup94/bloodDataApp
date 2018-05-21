@@ -23,6 +23,12 @@ export default DefaultNavigation = StackNavigator(
     },
     { 
       initialRouteName: 'Login',
+    },
+    {
+      mode: 'card',
+      cardStyle: { backgroundColor: 'transparent' },
+      tintColor: '#ffffff',
+      headerMode: 'screen'
     }
   );
 

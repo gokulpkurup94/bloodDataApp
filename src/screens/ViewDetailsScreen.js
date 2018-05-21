@@ -10,11 +10,18 @@ import {
   TouchableOpacity,
   CheckBox,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
+  ImageBackground,
+  Dimensions,
+  ScrollView,
+  StatusBar
+  
 } from 'react-native';
 
 import XLSX from 'xlsx';
 import RNFetchBlob from 'react-native-fetch-blob';
+import FormButton from '../components/FormButton';
+
 const { writeFile, createFile, dirs:{ DocumentDir, DownloadDir } } = RNFetchBlob.fs;
 const DDP = DownloadDir + "/";
 const input = res => res.map(x => String.fromCharCode(x)).join("");
@@ -31,10 +38,20 @@ type Props = {};
 export default class ViewDetailsScreen extends Component<Props> {
   static navigationOptions = {
     title:"View Details" ,
+    headerStyle: {
+      shadowColor: 'transparent',
+      backgroundColor: '#63E7BD',
+      elevation: 0,
+      shadowOpacity: 0,
+      marginTop: StatusBar.currentHeight
+    }
+    
+
   };
   constructor(props) {
     super(props);
       this.state={
+        isLandscape:'',
         bloodGroups:{ap:false,an:false,bp:false,bn:false,op:false,on:false,abp:false,abn:false},
         filteredData:[],
         data:[], 
@@ -130,6 +147,15 @@ export default class ViewDetailsScreen extends Component<Props> {
     
     
   }
+  findLayout = ()=>{
+    if(Dimensions.get('window').height>Dimensions.get('window').width){
+      this.setState({isLandscape:false})
+    }
+    else{
+      this.setState({isLandscape:true})
+    }
+    console.log("view",this.state.isLandscape)
+  }
   exportData = () => {
     Alert.alert(
       'Export',
@@ -167,7 +193,18 @@ export default class ViewDetailsScreen extends Component<Props> {
   render() {
     console.log(this.state.bloodGroups)
     return (
-      <View style={styles.container}>
+      <View style={styles.container} onLayout={()=>this.findLayout()}>
+      <StatusBar
+          backgroundColor = '#63E7BD'
+          translucent
+          barStyle = 'dark-content'
+        />
+        <View style = {!this.state.isLandscape ? {height:180}: {height:100}} >
+          <ImageBackground style={ styles.imgBackground } 
+                 resizeMode='cover' 
+                 source={require('../assets/images/bg2.jpg')}>
+            <View style={this.state.isLandscape?{flexDirection:'row',flex:1}:{flexDirection:'column',flex:1}}>
+              <View style={this.state.isLandscape?{flex:8}:{flex:4}}>
                 <View style={styles.header}>
                   <View style={{flex:1}}>
                     <Picker
@@ -178,117 +215,130 @@ export default class ViewDetailsScreen extends Component<Props> {
                       <Picker.Item label="Phone No" value="phoneNumber" />
                       <Picker.Item label="District" value="district" />
                       <Picker.Item label="Gender" value="gender" />
-                      
                     </Picker>
                   </View>
                   <View style={{flex:1}}>
                     <TextInput underlineColorAndroid='transparent' value={this.state.filterValue} onChangeText={(value)=> this.setState({filterValue: value})} placeholder='Enter Value'/>
                   </View>
-                  <View style={{width:40, alignItems:'flex-end', justifyContent:'center', padding:5}}>
-                    <TouchableOpacity onPress={()=> {
-                      console.log(this.state.filterValue,this.state.filterItem)
-                      this.filterBy(this.state.filterValue,this.state.data,this.state.filterItem)}}>
-                      <Icon name="ios-search" size={30}/>
-                    </TouchableOpacity>
-                    
+                </View>
+                <View style={!this.state.isLandscape ? {flex:1, width: '100%'}:{flexDirection: 'row', width: '100%'}}>
+                  <View style={!this.state.isLandscape?styles.bloodGroup:[styles.bloodGroup, {width:'50%'}]}>
+                    <View style={styles.bloodGroupItem}>
+                      <CheckBox color = '#FFFFFF' value={this.state.bloodGroups.ap} onValueChange={(val)=> this.setState({bloodGroups:{...this.state.bloodGroups,ap:!this.state.bloodGroups.ap}})}/>
+                      <Text>A+</Text>
+                    </View>
+                    <View style={styles.bloodGroupItem}>
+                      <CheckBox value={this.state.bloodGroups.bp} onValueChange={(val)=> this.setState({bloodGroups:{...this.state.bloodGroups, bp:!this.state.bloodGroups.bp}})}/>
+                      <Text>B+</Text>
+                    </View>
+                    <View style={styles.bloodGroupItem}>
+                      <CheckBox value={this.state.bloodGroups.op} onValueChange={(val)=> this.setState({bloodGroups:{...this.state.bloodGroups, op:!this.state.bloodGroups.op}})}/>
+                      <Text>O+</Text>
+                    </View>
+                    <View style={styles.bloodGroupItem}>
+                      <CheckBox value={this.state.bloodGroups.abp} onValueChange={(val)=> this.setState({bloodGroups:{...this.state.bloodGroups, abp:!this.state.bloodGroups.abp}})}/>
+                      <Text>AB+</Text>
+                    </View>
+                  </View>
+                  <View  style={!this.state.isLandscape?styles.bloodGroup:[styles.bloodGroup, {width:'50%'}]}>
+                    <View style={styles.bloodGroupItem}>
+                      <CheckBox value={this.state.bloodGroups.an} onValueChange={(val)=> this.setState({bloodGroups:{...this.state.bloodGroups, an:!this.state.bloodGroups.an}})}/>
+                      <Text>A-</Text>
+                    </View>
+                    <View style={styles.bloodGroupItem}>
+                      <CheckBox value={this.state.bloodGroups.bn} onValueChange={(val)=> this.setState({bloodGroups:{...this.state.bloodGroups, bn:!this.state.bloodGroups.bn}})}/>
+                      <Text>B-</Text>
+                    </View>                  
+                    <View style={styles.bloodGroupItem}>
+                      <CheckBox value={this.state.bloodGroups.on} onValueChange={(val)=> this.setState({bloodGroups:{...this.state.bloodGroups, on:!this.state.bloodGroups.on}})}/>
+                      <Text>O-</Text>
+                    </View>                  
+                    <View style={styles.bloodGroupItem}>
+                      <CheckBox value={this.state.bloodGroups.abn} onValueChange={(val)=> this.setState({bloodGroups:{...this.state.bloodGroups, abn:!this.state.bloodGroups.abn}})}/>
+                      <Text>AB-</Text>
+                    </View>
                   </View>
                 </View>
-                <View style={styles.bloodGroup}>
-                  <View style={styles.bloodGroupItem}>
-                    <Text>A+</Text>
-                    <CheckBox value={this.state.bloodGroups.ap} onValueChange={(val)=> this.setState({bloodGroups:{...this.state.bloodGroups,ap:!this.state.bloodGroups.ap}})}/>
-                  </View>
-                  <View style={styles.bloodGroupItem}>
-                    <Text>A-</Text>
-                    <CheckBox value={this.state.bloodGroups.an} onValueChange={(val)=> this.setState({bloodGroups:{...this.state.bloodGroups, an:!this.state.bloodGroups.an}})}/>
-                  </View>
-                  <View style={styles.bloodGroupItem}>
-                    <Text>B+</Text>
-                    <CheckBox value={this.state.bloodGroups.bp} onValueChange={(val)=> this.setState({bloodGroups:{...this.state.bloodGroups, bp:!this.state.bloodGroups.bp}})}/>
-                  </View>
-                  <View style={styles.bloodGroupItem}>
-                    <Text>B-</Text>
-                    <CheckBox value={this.state.bloodGroups.bn} onValueChange={(val)=> this.setState({bloodGroups:{...this.state.bloodGroups, bn:!this.state.bloodGroups.bn}})}/>
-                  </View>
+                
+              </View>
+              <View  style={!this.state.isLandscape?{flex:1}:{flex:1}}>
+                <View style = {styles.buttonContainer}>
+                  <FormButton 
+                    bgColor = '#FF2851' 
+                    textColor = '#ffffff'
+                    onPress={()=> {
+                    console.log(this.state.filterValue,this.state.filterItem)
+                    this.filterBy(this.state.filterValue,this.state.data,this.state.filterItem)}}
+                  >{'SEARCH'}</FormButton>
                 </View>
-                <View style={styles.bloodGroup}>
-                  <View style={styles.bloodGroupItem}>
-                    <Text>O+</Text>
-                    <CheckBox value={this.state.bloodGroups.op} onValueChange={(val)=> this.setState({bloodGroups:{...this.state.bloodGroups, op:!this.state.bloodGroups.op}})}/>
-                  </View>
-                  <View style={styles.bloodGroupItem}>
-                    <Text>O-</Text>
-                    <CheckBox value={this.state.bloodGroups.on} onValueChange={(val)=> this.setState({bloodGroups:{...this.state.bloodGroups, on:!this.state.bloodGroups.on}})}/>
-                  </View>
-                  <View style={styles.bloodGroupItem}>
-                    <Text>AB+</Text>
-                    <CheckBox value={this.state.bloodGroups.abp} onValueChange={(val)=> this.setState({bloodGroups:{...this.state.bloodGroups, abp:!this.state.bloodGroups.abp}})}/>
-                  </View>
-                  <View style={styles.bloodGroupItem}>
-                    <Text>AB-</Text>
-                    <CheckBox value={this.state.bloodGroups.abn} onValueChange={(val)=> this.setState({bloodGroups:{...this.state.bloodGroups, abn:!this.state.bloodGroups.abn}})}/>
-                  </View>
-
-                </View>
-
-                {!this.state.loading ?<FlatList
-                    style={{width:"100%"}}
-                    showsVerticalScrollIndicator={true}
-                    data={this.state.filteredData}
-                    renderItem={({item}) => <DisplayItemComponent person={item} />}
-                    indicatorStyle='black'
-                    keyExtractor={(item, index) => index}
-                    />: <ActivityIndicator size="large" color="#0000ff" />}
-                <View style={styles.fabButton}>
-                  <FabButtonComponent color='red' bgColor='green' iconName='ios-pin' onPress={()=>this.exportData()}/>
-                </View>
-                    
-
+            </View>
+          </View>
+        </ImageBackground>
       </View>
+      <View style={{flex:9}}>
+        {!this.state.loading ?
+          <FlatList
+              style={{width:"100%"}}
+              showsVerticalScrollIndicator={true}
+              data={this.state.filteredData}
+              renderItem={({item}) => <DisplayItemComponent person={item} />}
+              indicatorStyle='black'
+              keyExtractor={(item, index) => index}
+            />: 
+          <ActivityIndicator size="large" color="#0000ff" />}
+      </View>
+      <View style={styles.fabButton}>
+        <FabButtonComponent color='#FFFFFF' bgColor='#1EA0F2' iconName='ios-print' onPress={()=>this.exportData()}/>
+      </View>
+    </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-      width:"100%",
+    width:"100%",
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    height:Dimensions.get('window').height,
+    //justifyContent: 'center',
+    //alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+ 
+  imgBackground: {
+    width: '100%',
+    height: '100%',
+   
+},
   header: {
     flexDirection: 'row',
     width:'100%',
-    borderBottomColor: 'red',
-    borderBottomWidth: 2,
+    backgroundColor: 'rgba(255,255,255,0.6)'
   },
   bloodGroup: {
+    width: '100%',
     flexDirection: 'row',
-    width:'100%',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 5,
+    backgroundColor: 'rgba(255,255,255,0.6)',
+    paddingBottom: 10,
+    paddingTop: 5,
   },
   bloodGroupItem: {
+    flex:2,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+   justifyContent: 'center',
     paddingLeft: 5,
   },
   fabButton: {
     position: 'absolute',
     right: 10,
     bottom:10
+  },
+  buttonContainer:{
+   
+    flex:1
+  
   }
 });

@@ -3,6 +3,7 @@ import Rx from 'rxjs';
 
 
 export const getDetails= ()=> {
+  
   const itemsRef = firebaseApp.database().ref();
   return Rx.Observable.fromPromise (itemsRef.child('contacts').once('value').then(function(snapshot) {
     // The Promise was "fulfilled" (it succeeded).

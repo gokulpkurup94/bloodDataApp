@@ -14,7 +14,10 @@ export default class FormTextInput extends Component<Props> {
       <View style = {styles.container}>
         <View style = {styles.wrapper}>
           <View style = {styles.iconWrapper}>
-            <Icon {...this.props} color = 'white' style = {styles.icon} />
+            <Icon {...this.props} color = '#EF696B' style = {styles.icon} />
+          </View>
+          <View style = {styles.textWrapper}>
+            <Text style = {{color: '#EF696B'}} >{this.props.label} </Text>
           </View>
           <View style = {styles.inputWrapper}>
             <TextInput placeholderTextColor = '#FFFFFF' style = {styles.input} {...this.props} underlineColorAndroid = 'transparent'/>
@@ -30,9 +33,12 @@ export default class FormTextInput extends Component<Props> {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
+    height: 70,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10,
+    
+    // backgroundColor: 'rgba(0,0,0,.2)',
+
   },
   wrapper: {
     flexDirection: 'row',
@@ -41,18 +47,26 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
     color: 'white',
-
   },
   inputWrapper: {
-    flex: 9,
+    flex: 5,
     borderColor: 'transparent',
-    borderBottomColor: 'white',
-    borderWidth: 2,
+    borderWidth: 1/2,
+    borderRadius: 5,
+    shadowColor: '#EF696B',
+    shadowOpacity: 1,
+    shadowOffset: {width: 0, height: 10},
+    elevation: 5
   },
   iconWrapper: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  textWrapper: {
+    flex: 3,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
   }
 
 });

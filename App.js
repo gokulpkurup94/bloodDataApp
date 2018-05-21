@@ -13,6 +13,8 @@ import {
   StatusBar
 } from 'react-native';
 import * as firebase from 'firebase';
+import { firebaseApp } from "./src/config/firebase.config";
+
 
 
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -30,15 +32,16 @@ export default class App extends Component<Props> {
   // }
     
     // this.itemsRef.push({ title: text })
-
+    const itemsRef = firebaseApp.database().ref();
+    itemsRef.child('contacts').once('value').then(function(snapshot) {
+      // The Promise was "fulfilled" (it succeeded).
+      return snapshot.val();
+    }
+  );
   }
   render() {
     return (
-      <View style={{ flex:1, width:"100%"}}>
-        <StatusBar
-          backgroundColor="blue"
-          barStyle="light-content"
-        />
+      <View style={{flex:1, width:'100%',}}>
         <DefaultNavigation />
       </View>
       

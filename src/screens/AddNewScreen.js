@@ -10,7 +10,7 @@ import {
     KeyboardAvoidingView,
     StatusBar
         } from 'react-native';
-// import translations from '../i18n';
+
 import { StackNavigator } from 'react-navigation';
 // import Icon from 'react-native-vector-icons/Ionicons';
 import FormComponent from '../components/FormComponent';
@@ -20,6 +20,13 @@ type Props = {};
 export default class AddNewScreen extends Component<Props> {
     static navigationOptions = {
         title:"Add New" ,
+        headerStyle: {
+            shadowColor: 'transparent',
+            backgroundColor: '#63E7BD',
+            elevation: 0,
+            shadowOpacity: 0,
+            marginTop: StatusBar.currentHeight
+          }
       };
 
     constructor(props) {
@@ -36,14 +43,23 @@ export default class AddNewScreen extends Component<Props> {
     render() {
 
         return (
+            <ImageBackground 
+                source = {require('../assets/images/bg2.jpg')} 
+                style = {{width: '100%', }}
+            >
+                <StatusBar
+                    backgroundColor = '#63E7BD'
+                    translucent
+                    barStyle = 'dark-content'
+                />
+                <View style = {styles.container}>
+                    <ScrollView contentContainerStyle={{width:Dimensions.get('window').width,}}>
+                        <FormComponent person={{}} />
+                    </ScrollView>
+                    
+                </View>
+            </ImageBackground>
             
-            <View style = {styles.container}>
-                <ScrollView contentContainerStyle={{width:Dimensions.get('window').width}}>
-                <FormComponent person={{}} />
-                
-            </ScrollView>
-                
-            </View>
         );
     }
 }
@@ -53,7 +69,7 @@ const styles = StyleSheet.create({
         width:'100%',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0,0,0,0.5)',
+        paddingVertical: 10
     },
     
 });
