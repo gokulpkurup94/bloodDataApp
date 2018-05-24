@@ -69,7 +69,6 @@ export default class DisplayItemComponent extends Component<Props> {
                 <Text  style={styles.normalText}>{this.props.person.weight} Kg</Text>
               </View>
             </View>
-             
              <Text style={styles.normalText}>Address : {this.props.person.address}</Text>
             <View style={{flexDirection:'row'}}>
               <View style={{flex:9}}>
@@ -83,7 +82,7 @@ export default class DisplayItemComponent extends Component<Props> {
                                             'Are you sure to edit?',
                                             [
                                               {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-                                              {text: 'OK', onPress: () => {}}])}
+                                              {text: 'OK', onPress: this.props.editOnPress}])}
                                             >
                 <Icon name = 'ios-create' size = {35} color='#0048FF' />
               </TouchableOpacity>
@@ -94,7 +93,7 @@ export default class DisplayItemComponent extends Component<Props> {
                                             'Are you sure to delete?',
                                             [
                                               {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-                                              {text: 'OK', onPress: () => {}}])}
+                                              {text: 'OK', onPress:this.props.deleteOnPress}])}
                                             >
                 <Icon name = 'md-trash' size = {35} color='#F00' />
               </TouchableOpacity>

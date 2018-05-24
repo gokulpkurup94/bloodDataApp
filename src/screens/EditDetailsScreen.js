@@ -17,9 +17,9 @@ import FormComponent from '../components/FormComponent';
 import FormButton from '../components/FormButton';
 type Props = {};
 
-export default class AddNewScreen extends Component<Props> {
+export default class EditDetailsScreen extends Component<Props> {
     static navigationOptions = {
-        title:"Add New" ,
+        title:"Edit" ,
         headerStyle: {
             shadowColor: 'transparent',
             backgroundColor: '#63E7BD',
@@ -41,8 +41,7 @@ export default class AddNewScreen extends Component<Props> {
     }
 
     render() {
-        const { navigation } = this.props;
-        const item = navigation.getParam('data', {});
+
         return (
             <ImageBackground 
                 source = {require('../assets/images/bg2.jpg')} 
@@ -54,10 +53,8 @@ export default class AddNewScreen extends Component<Props> {
                     barStyle = 'dark-content'
                 />
                 <View style = {styles.container}>
-                    <ScrollView contentContainerStyle={{width:Dimensions.get('window').width}}>
-                        <View style = {{width: '100%'}}>
-                            <FormComponent person={item} navigateToHome={()=>this.props.navigation.goBack()} navigateToView={()=>this.props.navigation.goBack()}/>
-                        </View>
+                    <ScrollView contentContainerStyle={{width:Dimensions.get('window').width,}}>
+                        <FormComponent person={{}} />
                     </ScrollView>
                     
                 </View>

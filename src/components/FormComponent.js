@@ -16,7 +16,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import FormTextInput from './FormTextInput';
 import FormButton from './FormButton';
-import { putDetails, getDetails } from "../config/firebase.service";
+import { putDetails, getDetails, editDetails } from "../config/firebase.service";
 type Props = {};
 export default class FormComponent extends Component<Props> {
     constructor(props){
@@ -28,7 +28,7 @@ export default class FormComponent extends Component<Props> {
             gender:this.props.person.gender?this.props.person.gender:"male",
             phoneNumber:this.props.person.phoneNumber,
             bloodGroup:this.props.person.bloodGroup?this.props.person.bloodGroup:"A+",
-            dob:this.props.person.dob,
+            dob:this.props.person.dob ? this.props.person.dob:"1990-01-01",
             weight:this.props.person.weight,
             district:this.props.person.district,
             address:this.props.person.address,
@@ -39,17 +39,29 @@ export default class FormComponent extends Component<Props> {
             console.log(this.timeIcon)}
           )
     }
+
+    // hasNull(target) {
+    //     for (var member in target) {
+    //         if(member!=id){
+    //             if (target[member] == null)
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
   render() {
+    //   console.log(this.hasNull(this.state))
+    console.log('state',this.state);
     return (
-        
+       
         <View style = {styles.wrapper}>
         {this.state.loading ? <ActivityIndicator size="large" color="#0000ff" /> :
             <View style = {styles.wrapper}>
                     <View style = {styles.iconWrapper}>
-                        <FormTextInput name = 'ios-person' size = {30} label = 'Name' value={this.state.name} onChangeText={(name) => {this.setState({name: name})}} />
+                        <FormTextInput name = 'ios-person' autoCapitalize = 'words' size = {30} label = 'Name' value={this.state.name} onChangeText={(name) => {this.setState({name: name})}} />
                     </View>
                     <View style = {styles.iconWrapper}>
-                        <FormTextInput name = 'ios-call' size = {30} label = 'Phone No' value={this.state.phoneNumber}  onChangeText={(phoneNumber) => {this.setState({phoneNumber: phoneNumber})}}/>
+                        <FormTextInput name = 'ios-call' maxLength = {10} keyboardType = 'numeric' size = {30} label = 'Phone No' value={this.state.phoneNumber}  onChangeText={(phoneNumber) => {this.setState({phoneNumber: phoneNumber})}}/>
                     </View>
                     <View style={styles.pickerComponentContainer}>
                         <View style = {styles.pickerIconContainer}>
@@ -61,7 +73,7 @@ export default class FormComponent extends Component<Props> {
                         <View style={styles.pickerContainer}>
                             <Picker
                                 selectedValue={this.state.gender}
-                                style={{ color: '#363F3E', width: '100%' }}
+                                style={{ color: '#363F3E', width: '100%', marginLeft: 8 }}
                                 onValueChange={(itemValue, itemIndex) => this.setState({gender: itemValue})}
                                 >
                                 <Picker.Item label="Male" value="male" />
@@ -81,7 +93,7 @@ export default class FormComponent extends Component<Props> {
                         <View style={styles.pickerContainer}>
                             <Picker
                                 selectedValue={this.state.bloodGroup}
-                                style={{color: '#363F3E', width: '100%',   }}
+                                style={{color: '#363F3E', width: '100%', marginLeft: 8}}
                                 value={this.state.bloodGroup}
                                 onValueChange={(itemValue, itemIndex) => this.setState({bloodGroup: itemValue})}
                                 >
@@ -109,7 +121,7 @@ export default class FormComponent extends Component<Props> {
                             <DatePicker
                                 date={this.state.dob}
                                 mode="date"
-                                
+                                style={{marginLeft: 8}}
                                 format="YYYY-MM-DD"
                                 minDate="1950-01-01"
                                 confirmBtnText="Confirm"
@@ -137,13 +149,13 @@ export default class FormComponent extends Component<Props> {
 
 
                     <View style = {styles.iconWrapper}>
-                        <FormTextInput name = 'ios-body' size = {30} label = 'Weight' value={this.state.weight} onChangeText={(weight) => {this.setState({weight: weight})}}/>
+                        <FormTextInput name = 'ios-body' maxLength = {3} size = {30} keyboardType = 'numeric' label = 'Weight' value={this.state.weight} onChangeText={(weight) => {this.setState({weight: weight})}}/>
                     </View>
                     <View style = {styles.iconWrapper}>
                         <FormTextInput name = 'ios-pin' size = {30} label = 'District 'value={this.state.district}  onChangeText={(district) => {this.setState({district: district})}}/>
                     </View>
                     <View style = {styles.iconWrapper}>
-                        <FormTextInput name = 'ios-pin-outline' size = {30} label = 'Address' value={this.state.address}  onChangeText={(address) => {this.setState({address: address})}}/>
+                        <FormTextInput name = 'ios-pin-outline' multiline = {true} size = {30} label = 'Address' value={this.state.address}  onChangeText={(address) => {this.setState({address: address})}}/>
                     </View>
 
 
@@ -159,7 +171,7 @@ export default class FormComponent extends Component<Props> {
                                     date={this.state.lastDonationDate}
                                     style={{width: "100%",}}
                                     mode="date"
-                                    
+                                    style={{marginLeft: 8}}
                                     format="YYYY-MM-DD"
                                     confirmBtnText="Confirm"
                                     cancelBtnText="Cancel"
@@ -182,36 +194,65 @@ export default class FormComponent extends Component<Props> {
                     </View>
                     
                     <View style = {styles.buttonsContainer}>
-                        <View style = {styles.buttonWrapper}>
+                        {this.props.person.id ? <View style = {styles.buttonWrapper}>
                             <FormButton 
                                 bgColor = '#00a302' 
                                 textColor = '#000000'
                                 onPress = {() => {
                                     this.setState({loading: true})
-                                    getDetails().subscribe((data)=>{
-                                        console.log("inn",data);
-                                        var index = 0;
-                                        for(let d in data){
-                                            index = data[d].id
-                                        }
-                                        index = index+1;
-                                        console.log(index)
-                                        this.setState({id: index})
-                                        putDetails(this.state).subscribe((data)=> {
+                                    editDetails(this.state).subscribe((data)=> {
                                             this.setState({loading: false})
                                             Alert.alert(
-                                            'Saved ',
+                                            'Update ',
                                             'Sucessfully',
                                             [
-                                                {text: 'OK', onPress: () => console.log('OK Pressed')},
+                                                {text: 'OK', onPress:this.props.navigateToView},
                                             ],
                                             { cancelable: false }
                                         )})
-                                    })
+                                }}
+                            >{'Update'}</FormButton>
+                        </View> :
+                        <View style = {styles.buttonWrapper}>
+                            <FormButton 
+                                bgColor = '#00a302' 
+                                textColor = '#000000'
+                                onPress = {() => {
+                                    if(this.state.name !='' && this.state.gender !='' && this.state.phoneNumber !='' && this.state.bloodGroup !='' && this.state.dob !='' && this.state.weight !='' && this.state.district !='' && this.state.address !='' && this.state.lastDonationDate !=''){
+                                        this.setState({loading: true})
+                                        getDetails().subscribe((data1)=>{
+                                            var data= [];
+                                            for(d in data1){
+                                            if(d){
+                                                data.push(data1[d]);
+                                            }
+                                            }
+                                            var index = 0;
+                                            for(let d in data){
+                                                index = data[d].id
+                                            }
+                                            index = index+1;
+                                            console.log(index)
+                                            this.setState({id: index})
+                                            putDetails(this.state).subscribe((data)=> {
+                                                this.setState({loading: false})
+                                                Alert.alert(
+                                                'Saved ',
+                                                'Sucessfully',
+                                                [
+                                                    {text: 'OK', onPress:this.props.navigateToHome},
+                                                ],
+                                                { cancelable: false }
+                                            )})
+                                        })
+                                    }
+                                    else{
+                                        alert("Fill all Fields");
+                                    }
                                     
                                 }}
                             >{'Save'}</FormButton>
-                        </View>
+                        </View>}
                         <View style = {{flex: 1}}>
 
                         </View>
@@ -219,7 +260,7 @@ export default class FormComponent extends Component<Props> {
                             <FormButton 
                                 bgColor = '#EF696B' 
                                 textColor = '#000000'
-                                onPress ={() => this.setState({name:"", phoneNumber:"",gender:"Male",bloodGroup:"A+",dob:"",weight:"",district:"",address:"",lastDonationDate:"" })}
+                                onPress ={() => this.setState({name:"", phoneNumber:"",gender:"Male",bloodGroup:"A+",dob:"1990-01-01",weight:"",district:"",address:"",lastDonationDate:"" })}
                             >{'Clear'}</FormButton>
                         </View>
                     </View>
@@ -231,13 +272,14 @@ export default class FormComponent extends Component<Props> {
 
 const styles = StyleSheet.create({
     wrapper: {
-        height: Dimensions.get('window').height,
-        width:'90%',
+        // height: Dimensions.get('window').height,
+        width:'95%',
         justifyContent: 'center',
         alignItems: 'center',
     },
     iconWrapper: {
         width:'100%',
+        
     },
     pickerWrapper: {
         marginTop: 15,
@@ -254,8 +296,7 @@ const styles = StyleSheet.create({
     },
     pickerComponentContainer: {
         width: '100%', 
-        height: 150, 
-        flex: 1,
+        height: 70, 
         justifyContent: 'center', 
         alignItems: 'center', 
         flexDirection: 'row' 
@@ -279,7 +320,8 @@ const styles = StyleSheet.create({
         shadowColor: '#EF696B',
         shadowOpacity: 1,
         shadowOffset: {width: 0, height: 10},
-        elevation: 5
+        elevation: 5,
+        backgroundColor: 'white'
     },
     buttonsContainer: {
         flexDirection: 'row',

@@ -32,7 +32,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import DisplayItemComponent from "../components/DisplayItemComponent";
 import FabButtonComponent from "../components/FabButtonComponent";
 
-import { getDetails } from "../config/firebase.service";
+import { getDetails, removeValue } from "../config/firebase.service";
 
 type Props = {};
 export default class ViewDetailsScreen extends Component<Props> {
@@ -59,20 +59,31 @@ export default class ViewDetailsScreen extends Component<Props> {
         filterItem: 'select', 
         filterValue: '',
         data1: [[1,2,3],[4,5,6]],};
-    getDetails().subscribe((data)=>{
+        this.getData();
+    
+    // console.log(abc)
+  }
+  getData(){
+    getDetails().subscribe((data1)=>{
+      var data= [];
+        for(d in data1){
+          if(d){
+            data.push(data1[d]);
+          }
+        }
         for(d in data){
             data[d].key=data[d].id;
         }
         console.log(data)
+        // removeValue().subscribe((data)=> { console.log(data)})
         this.setState({data: data, filteredData: data, loading:false})
         // var abc= this.filterBy("Trivandrum",data,"district");
         // console.log("abc", abc)
         
     });
-    // console.log(abc)
   }
   componentDidMount(){
-    console.log("mounted")
+    this.getData();
   }
   filterBy(key, arrayData, reference) {
     var filteredData;
@@ -281,7 +292,13 @@ export default class ViewDetailsScreen extends Component<Props> {
               style={{width:"100%"}}
               showsVerticalScrollIndicator={true}
               data={this.state.filteredData}
-              renderItem={({item}) => <DisplayItemComponent person={item} />}
+              renderItem={({item}) => <DisplayItemComponent person={item} 
+              deleteOnPress={()=>{
+                this.setState({loading:true})
+                removeValue(item.id).subscribe(()=>{alert('Deleted')
+                  this.setState({loading:false})});
+                this.getData()}} 
+              editOnPress={()=>this.props.navigation.navigate('AddNew', {data: item})} />}
               indicatorStyle='black'
               keyExtractor={(item, index) => index}
             />: 

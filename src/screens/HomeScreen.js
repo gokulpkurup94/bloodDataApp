@@ -11,11 +11,13 @@ import {
  KeyboardAvoidingView,
  StatusBar,
  ScrollView,
+ Alert
  
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { signOut } from "../config/firebase.service";
 
 type Props = {};
 export default class HomeScreen extends Component<Props> {
@@ -30,6 +32,10 @@ export default class HomeScreen extends Component<Props> {
  }
  onLayout(e) {
   this.setState( {isPortrait: Dimensions.get('window').height > Dimensions.get('window').width ? true: false})
+ }
+ signOut1(){
+  console.log('signOut');
+  signOut().then(()=>this.props.navigation.goBack()).catch(()=>console.log("erro"))
  }
  render() {
   return (
@@ -66,6 +72,16 @@ export default class HomeScreen extends Component<Props> {
         {/* </View> */}
       </View>
      </View>
+     <View style = {styles.buttonWrapper}>
+        <TouchableOpacity onPress={()=> Alert.alert(
+                                            'Sign Out',
+                                            'Are you sure to logout?',
+                                            [
+                                              {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                                              {text: 'OK', onPress: ()=>this.signOut1()}])} >
+          <MaterialCommunityIcons name="power" size={30} color="#ffffff" />
+       </TouchableOpacity>
+      </View>
    </ImageBackground>
    
   );
@@ -114,5 +130,16 @@ const styles = StyleSheet.create({
   flex: 2,
   justifyContent: 'center',
   alignItems: 'center',
- }
+ },
+ buttonWrapper: {
+  position:'absolute',
+  width:50,
+  height:50,
+  marginTop: 25,
+  right: 15,
+  borderRadius:25,
+  backgroundColor:'rgba(0,0,0,0.6)',
+  justifyContent: 'center',
+  alignItems: 'center',
+}
 });

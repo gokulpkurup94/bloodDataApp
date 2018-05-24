@@ -43,13 +43,13 @@ export default class FloatingInput extends Component {
       const labelStyle = {
        
         fontSize: !isFocused ? 17 : 17,
-        //color: !isFocused ? '#D3D3D3' : '#D3D3D3',
-        color: !isPortrait ? '#D3D3D3' : '#936366'
+        color: !isFocused ? '#000000' : '#000000',
+        color: !isPortrait ? '#000000' : '#000000'
       };
       const viewStyle = {
         position: 'absolute',
         left: 0,
-        top: !isFocused ? 20 : 0,
+        top: !isFocused ? 30 : 0,
         alignItems: 'center',
         justifyContent:'center',
         width:'100%' 
@@ -57,20 +57,16 @@ export default class FloatingInput extends Component {
      
       return (
         <View style = {{paddingVertical: 20, width:'100%', justifyContent: 'center', }}>
-         <View style = {viewStyle}>
-            <Text onLayout = {this.onLayout.bind(this)} style = {labelStyle}>
-              {label}
-            </Text>
-          </View>
-          <View style = {{borderBottomWidth: 1/2, borderColor: '#A3A5A8', backgroundColor:'rgba(0,0,0,0)'}}>
+         
+          <View style = {{borderBottomWidth: 1/2, borderColor: '#A3A5A8'}}>
             <View style = {{flexDirection:'row', backgroundColor:'rgba(0,0,0,0)', marginBottom: 25 }}>
               <View style = {{flex:2, justifyContent: 'center',alignItems:'center'}}>
                 <Icon name = {this.props.leftIcon} size = {30} color = '#D3D3D3' />
               </View>
-              <View style = {{flex:8}}>
+              <View style = {{flex:8,}}>
                 <TextInput
                   {...this.props}
-                  style = {{ height: 46, fontSize: 20, color: '#FFFFFF',textAlign: 'center'}}
+                  style = {{ height: 46, fontSize: 20, color: '#FFFFFF',textAlign: 'center', backgroundColor: 'white'}}
                   onFocus = {this.handleFocus}
                   onBlur = {this.handleBlur}
                   underlineColorAndroid = 'transparent'
@@ -83,6 +79,11 @@ export default class FloatingInput extends Component {
                   <Icon name = {this.state.isShowPassword ? 'ios-eye-off' : this.props.rightIcon} size = {30} color = '#D3D3D3' /> : null}
               </TouchableOpacity>
             </View>
+          </View>
+          <View style = {viewStyle}>
+            <Text onLayout = {this.onLayout.bind(this)} style = {labelStyle}>
+              {label}
+            </Text>
           </View>
           
           

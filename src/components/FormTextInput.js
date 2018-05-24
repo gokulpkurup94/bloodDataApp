@@ -20,7 +20,7 @@ export default class FormTextInput extends Component<Props> {
             <Text style = {{color: '#EF696B'}} >{this.props.label} </Text>
           </View>
           <View style = {styles.inputWrapper}>
-            <TextInput placeholderTextColor = '#FFFFFF' style = {styles.input} {...this.props} underlineColorAndroid = 'transparent'/>
+            <TextInput placeholderTextColor = '#363F3E' style = {styles.input} {...this.props} underlineColorAndroid = 'transparent'/>
           </View>
           
         </View>
@@ -46,7 +46,10 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '100%',
-    color: 'white',
+    color: '#363F3E',
+    paddingHorizontal: 10,
+    backgroundColor: 'white',
+    borderRadius: 5,
   },
   inputWrapper: {
     flex: 5,

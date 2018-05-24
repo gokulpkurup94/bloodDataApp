@@ -5,6 +5,10 @@ import HomeScreen from './HomeScreen';
 import LoginScreen from './LoginScreen';
 import AddNewScreen from './AddNewScreen';
 import ViewDetailsScreen from './ViewDetailsScreen';
+import EditDetailsScreen from './EditDetailsScreen';
+
+import DisplayItemComponent from '../components/DisplayItemComponent';
+
 
 export default DefaultNavigation = StackNavigator(
     {
@@ -19,6 +23,12 @@ export default DefaultNavigation = StackNavigator(
       },
       View:{
         screen:ViewDetailsScreen
+      },
+      Edit:{
+        screen:EditDetailsScreen
+      },
+      DisplayItem:{
+        screen: DisplayItemComponent
       }
     },
     { 

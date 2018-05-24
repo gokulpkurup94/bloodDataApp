@@ -10,7 +10,8 @@ import {
   Dimensions,
   KeyboardAvoidingView,
   StatusBar,
-  ScrollView
+  ScrollView,
+  ActivityIndicator
 } from 'react-native';
 
 import { StackNavigator } from 'react-navigation';
@@ -18,7 +19,7 @@ import { StackNavigator } from 'react-navigation';
 import  FloatingInput  from "../components/FloatingInput";
 import  FormButton  from "../components/AuthenticationFormButton";
 
-
+import { login } from "../config/firebase.service";
 
 
 type Props = {};
@@ -33,6 +34,8 @@ export default class LoginScreen extends Component<Props> {
     this.state = {
       email: '',
       password:'',
+      error: false,
+      loading:false,
       isPortrait: Dimensions.get('window').height > Dimensions.get('window').width ? false: true
     };
   }
@@ -62,8 +65,10 @@ export default class LoginScreen extends Component<Props> {
           translucent
           barStyle = 'dark-content'
         />
-        <ScrollView>
-          <View onLayout = {this.onLayout.bind(this)} style = {!this.state.isPortrait ? [styles.container,{height: Dimensions.get('window').height}] : [styles.landscapeContainer,{height: Dimensions.get('window').height}]}>
+        {!this.state.loading ?
+        <View onLayout = {this.onLayout.bind(this)} style = {!this.state.isPortrait ? [styles.container,{height: Dimensions.get('window').height}] : [styles.landscapeContainer,{height: Dimensions.get('window').height}]}>
+        <ScrollView contentContainerStyle={{height:Dimensions.get('window').height}}>
+           <View onLayout = {this.onLayout.bind(this)} style = {!this.state.isPortrait ? [styles.container,{height: Dimensions.get('window').height}] : [styles.landscapeContainer,{height: Dimensions.get('window').height}]}>
             <View style = {styles.logoContainer}>
               <Image 
                 style = {styles.logo}
@@ -88,12 +93,24 @@ export default class LoginScreen extends Component<Props> {
                 rightIcon = 'ios-eye'
                 
               />
+              {this.state.error ? 
+              <View style = {{width: '80%', alignItems:'center',justifyContent:'center', paddingVertical: 5}}>
+                <Text style = {{color: 'red'}}>Invalid username or password</Text>
+              </View> : null}
               <View style = {{width: '80%'}}>
                 <FormButton 
                   isLogin buttonText = 'Login' 
                   buttontextColor = '#FFFFFF' 
                   buttonColor = '#EF696B'
-                  onPress ={() => this.props.navigation.navigate('Home')}/>              
+                  onPress ={() => {
+                    this.setState({loading:true})
+                    // login(this.state.email,this.state.password).then((value)=>this.props.navigation.navigate('Home')).catch((error)=>this.setState({error: true}));
+                    login('gokulpkurup94@gmail.com','gokulp').then((value)=>{
+                      this.setState({loading:false})
+                      this.props.navigation.navigate('Home')}).catch((error)=>this.setState({error: true}))
+                    }
+                    
+                  }/>              
               </View>
               <View style = {{flexDirection: 'row', paddingVertical: 20}}>
                 <Text style = {{color: '#73C7B5'}}>Don't have an account?</Text>
@@ -104,7 +121,12 @@ export default class LoginScreen extends Component<Props> {
             </View>
           </View>
         </ScrollView>
-        
+        </View>
+        :
+          <View style={{flex:1, alignItems:'center', justifyContent: 'center',}}>
+                <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+          }
       </ImageBackground>
      
     );
@@ -115,6 +137,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'rgba(0,0,0,0.2)',
     width:'100%',
+    justifyContent: 'center'
    
   },
   landscapeContainer: {
